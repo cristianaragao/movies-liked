@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000e21"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -17,14 +17,30 @@
     "ios": {
       "supportsTablet": true
     },
+    "backgroundColor": "#000e21",
+    "androidStatusBar": {
+      "translucent": true,
+      "barStyle": "light-content"
+    },
+    "androidNavigationBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#000e21"
+    },
     "android": {
+      "backgroundColor": "#000e21",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#000e21"
+      },
+      "package": "com.aragao.moviesliked"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "718bb40d-9922-49a1-ae74-edb2b746334b"
+      }
     }
   }
 }

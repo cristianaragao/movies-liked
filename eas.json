@@ -1,0 +1,24 @@
+{
+  "cli": {
+    "version": ">=3.18.3"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_TOKEN": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZjI0OWRmNGI0M2IyYTQ0NWFlNzA2MmUzMmEwZTQxNiIsInN1YiI6IjVkY2UwNDY3NzlhMWMzMDAxNzQ4MzM2YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gw0fJfF2lPNULuQu2HWjZ8u1L2tMieiA5NxU_Mibg3U"
+      }
+    },
+    "production": {}
+  },
+  "submit": {
+    "production": {}
+  }
+}
