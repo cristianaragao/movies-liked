@@ -1,23 +1,13 @@
+import { api, apiGeneric } from "api";
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  ImageBackground,
-  ActivityIndicator,
-} from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { api, apiGeneric } from "../../../api";
 
-import {
-  Text,
-  Heading,
-  FlatList,
-  Image,
-  LinearGradient,
-  HStack,
-  VStack,
-} from "@gluestack-ui/themed";
+import { Image, ImageBackground } from "expo-image";
+
+import { FlatList, Heading, HStack, Text, VStack } from "@gluestack-ui/themed";
+
+import { LinearGradient } from "expo-linear-gradient";
 
 import { AntDesign } from "@expo/vector-icons";
 
@@ -25,14 +15,22 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import YoutubePlayer from "react-native-youtube-iframe";
 
-import { lockAsync, OrientationLock } from "expo-screen-orientation";
-import { TypeVideo } from "../../../types/video.type";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { lockAsync, OrientationLock } from "expo-screen-orientation";
 import { RootStackParamList } from "../../../types/routes.type";
+import { TypeVideo } from "../../../types/video.type";
 
 import { FontAwesome } from "@expo/vector-icons";
-import { SECONDARY_COLOR } from "../../../constants/COLORS";
+import { PRIMARY_COLOR } from "../../../constants/COLORS";
 import { parseStringToDate } from "../../../utils/formatDate";
+
+import {
+  LucideIcon,
+  MonitorPlay,
+  MonitorUp,
+  Star,
+  Timer,
+} from "lucide-react-native";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Detalhes">;
 
@@ -52,6 +50,11 @@ export default function Details({ route, navigation }: Props) {
 
     const load = async () => {
       setLoading(true);
+
+      setCasts([]);
+      setSimilars([]);
+      setReviews([]);
+      setStreams([]);
 
       let movieAux = await api(`/${isTV ? "tv" : "movie"}/${id}`)
         .then((res) => res)
@@ -79,7 +82,7 @@ export default function Details({ route, navigation }: Props) {
       setSimilars(similarsAux);
 
       let reviewsAux = await apiGeneric(
-        `/${isTV ? "tv" : "movie"}/${id}/reviews`
+        `/${isTV ? "tv" : "movie"}/${id}/reviews`,
       )
         .then((res) => res.results)
         .catch(() => []);
@@ -87,7 +90,7 @@ export default function Details({ route, navigation }: Props) {
       setReviews(reviewsAux);
 
       let streamsAux = await apiGeneric(
-        `/${isTV ? "tv" : "movie"}/${id}/watch/providers`
+        `/${isTV ? "tv" : "movie"}/${id}/watch/providers`,
       )
         .then((res) => res.results?.BR?.flatrate || [])
         .catch(() => []);
@@ -96,10 +99,18 @@ export default function Details({ route, navigation }: Props) {
     };
 
     load();
+
+    return () => {
+      setLoading(true);
+      setCasts([]);
+      setSimilars([]);
+      setReviews([]);
+      setStreams([]);
+    };
   }, [route.params.id]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -114,7 +125,10 @@ export default function Details({ route, navigation }: Props) {
           >
             <AntDesign name="arrowleft" size={24} color="white" />
           </TouchableOpacity>
-          <HStack style={{ justifyContent: "center" }}>
+          <HStack
+            mt={10}
+            style={{ justifyContent: "space-between", paddingHorizontal: 20 }}
+          >
             <View
               style={{
                 height: 300,
@@ -124,78 +138,38 @@ export default function Details({ route, navigation }: Props) {
               }}
             >
               <ImageBackground
-                src={`http://image.tmdb.org/t/p/original${movie?.poster_path}`}
-                source={{ scale: 0 }}
+                source={{
+                  uri: `https://image.tmdb.org/t/p/original${movie?.poster_path}`,
+                }}
+                priority="high"
                 style={{ width: "100%", height: "100%" }}
               />
             </View>
-            <VStack ml={30} justifyContent="space-around">
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderColor: "white",
-                  borderWidth: 1,
-                  padding: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Heading color="white">
-                  {isTV
+            <VStack ml={30} flex={1} justifyContent="space-around">
+              <Info
+                text={
+                  isTV
                     ? `${movie?.number_of_seasons}`
                     : `${Math.floor(movie?.runtime / 60)}h ${
                         movie?.runtime % 60
-                      }m`}
-                </Heading>
-                <Text color="white">{isTV ? "Temporadas" : "Duração"}</Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderColor: "white",
-                  borderWidth: 1,
-                  padding: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Heading color="white">
-                  {movie?.vote_average?.toFixed(1)}
-                </Heading>
-                <Text color="white">Pontuação</Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderColor: "white",
-                  borderWidth: 1,
-                  padding: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Heading color="white">
-                  {parseStringToDate(
-                    isTV ? movie?.first_air_date : movie?.release_date
-                  )}
-                </Heading>
-                <Text color="white">Lançamento</Text>
-              </View>
+                      }m`
+                }
+                Icon={isTV ? MonitorPlay : Timer}
+              />
+              <Info text={movie?.vote_average?.toFixed(1)} Icon={Star} />
+              <Info
+                text={parseStringToDate(
+                  isTV ? movie?.first_air_date : movie?.release_date,
+                )}
+                Icon={MonitorUp}
+              />
             </VStack>
           </HStack>
-          <Heading color="white" mt={20} textAlign="center">
-            {isTV ? movie?.name : movie?.title}
-          </Heading>
-          {movie?.overview && (
-            <Text mt={20} px={20} w="100%" color="white">
-              {movie?.overview}
-            </Text>
-          )}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             style={{
-              marginVertical: 20,
+              marginTop: 30,
             }}
           >
             {movie?.genres?.map((genre: any, index: number) => (
@@ -206,8 +180,8 @@ export default function Details({ route, navigation }: Props) {
                 color="white"
                 py={5}
                 px={15}
-                borderColor="white"
-                backgroundColor={SECONDARY_COLOR}
+                borderColor="gray"
+                backgroundColor={PRIMARY_COLOR}
                 borderWidth={1}
                 borderRadius={20}
               >
@@ -215,6 +189,22 @@ export default function Details({ route, navigation }: Props) {
               </Text>
             ))}
           </ScrollView>
+          <View
+            style={{
+              margin: 20,
+              padding: 20,
+              borderRadius: 10,
+              backgroundColor: PRIMARY_COLOR,
+            }}
+          >
+            <Heading color="white">{isTV ? movie?.name : movie?.title}</Heading>
+            {movie?.overview && (
+              <Text mt={20} textAlign="justify" color="white">
+                {movie?.overview}
+              </Text>
+            )}
+          </View>
+
           {videos.length > 0 && (
             <View
               style={{
@@ -231,7 +221,7 @@ export default function Details({ route, navigation }: Props) {
                   lockAsync(
                     isFullScreen
                       ? OrientationLock.LANDSCAPE
-                      : OrientationLock.PORTRAIT
+                      : OrientationLock.PORTRAIT,
                   );
                 }}
               />
@@ -275,13 +265,14 @@ export default function Details({ route, navigation }: Props) {
                       }}
                     >
                       <Image
+                        priority="high"
                         style={{
                           height: "100%",
                           width: "100%",
                           position: "absolute",
                         }}
                         source={{
-                          uri: `http://image.tmdb.org/t/p/original${
+                          uri: `https://image.tmdb.org/t/p/original${
                             (cast as any).profile_path
                           }`,
                         }}
@@ -309,7 +300,7 @@ export default function Details({ route, navigation }: Props) {
               <FlatList
                 mt={10}
                 data={similars.sort((movieA, movieB) =>
-                  movieA.popularity > movieB.popularity ? -1 : 1
+                  movieA.popularity > movieB.popularity ? -1 : 1,
                 )}
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -345,13 +336,14 @@ export default function Details({ route, navigation }: Props) {
                         }}
                       >
                         <Image
+                          priority="high"
                           style={{
                             height: "100%",
                             width: "100%",
                             position: "absolute",
                           }}
                           source={{
-                            uri: `http://image.tmdb.org/t/p/original${
+                            uri: `https://image.tmdb.org/t/p/original${
                               (movie as any).poster_path
                             }`,
                           }}
@@ -406,7 +398,7 @@ export default function Details({ route, navigation }: Props) {
               <FlatList
                 mt={10}
                 data={streams.sort((streamA, streamB) =>
-                  streamA.display_priority < streamB.display_priority ? -1 : 1
+                  streamA.display_priority < streamB.display_priority ? -1 : 1,
                 )}
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -415,7 +407,7 @@ export default function Details({ route, navigation }: Props) {
                     style={{
                       marginRight: index < streams.length - 1 ? 10 : 20,
                       marginLeft: index === 0 ? 20 : 0,
-                      backgroundColor: SECONDARY_COLOR,
+                      backgroundColor: PRIMARY_COLOR,
                       borderRadius: 10,
                       overflow: "hidden",
                       height: 80,
@@ -423,14 +415,15 @@ export default function Details({ route, navigation }: Props) {
                     }}
                   >
                     <Image
+                      priority="high"
                       style={{
                         height: "100%",
                         width: "100%",
                       }}
                       source={{
-                        uri: `http://image.tmdb.org/t/p/original${
-                          (stream as any)?.logo_path
-                        }`,
+                        uri: `https://image.tmdb.org/t/p/original${(
+                          stream as any
+                        )?.logo_path}`,
                       }}
                     />
                   </View>
@@ -444,8 +437,19 @@ export default function Details({ route, navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+const Info = ({ text, Icon }: { text: string; Icon: LucideIcon }) => (
+  <VStack
+    style={{
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: PRIMARY_COLOR,
+      paddingVertical: 10,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: "gray",
+    }}
+  >
+    <Heading color="white">{text}</Heading>
+    <Icon style={{ height: 5, width: 5, color: "white" }} />
+  </VStack>
+);

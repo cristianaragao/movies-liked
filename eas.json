@@ -13,7 +13,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_TOKEN": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZjI0OWRmNGI0M2IyYTQ0NWFlNzA2MmUzMmEwZTQxNiIsInN1YiI6IjVkY2UwNDY3NzlhMWMzMDAxNzQ4MzM2YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gw0fJfF2lPNULuQu2HWjZ8u1L2tMieiA5NxU_Mibg3U"
+        "EXPO_PUBLIC_TOKEN": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMDk5OGI1ZTNiN2RmMjVkNjEzNjMwODlmNTYxOTExZiIsInN1YiI6IjVkY2UwNDY3NzlhMWMzMDAxNzQ4MzM2YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Xza66ZYpTiCd76uQuXxGylerPM8rBTIuTG311cfFr9w"
       }
     },
     "production": {}

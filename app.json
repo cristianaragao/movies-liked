@@ -1,6 +1,9 @@
 {
   "expo": {
-    "name": "movies-liked",
+    "experiments": {
+      "tsconfigPaths": true
+    },
+    "name": "I Love Movies",
     "slug": "movies-liked",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -20,7 +23,8 @@
     "backgroundColor": "#000e21",
     "androidStatusBar": {
       "translucent": true,
-      "barStyle": "light-content"
+      "barStyle": "light-content",
+      "backgroundColor": "#00000000"
     },
     "androidNavigationBar": {
       "barStyle": "light-content",
@@ -32,7 +36,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000e21"
       },
-      "package": "com.aragao.moviesliked"
+      "package": "com.aragao.moviesliked",
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png"
