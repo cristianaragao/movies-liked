@@ -9,7 +9,7 @@ export const api = async (url: string) => {
 }
 
 export const apiGeneric = async (url: string) => {
-    return await fetch("https://api.themoviedb.org/3" + url + "", {
+    return await fetch("https://api.themoviedb.org/3" + url + `${url.includes("?") ? "&" : "?"}language=pt-BR`, {
         headers: {
             Authorization: `Bearer ${process.env.EXPO_PUBLIC_TOKEN}`,
             "Content-Type": "application/json"
